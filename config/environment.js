@@ -3,7 +3,9 @@
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'vtodo',
+    podModulePrefix: 'vtodo/pods',
     environment: environment,
+    namespace: "api",
     baseURL: '/',
     locationType: 'auto',
     EmberENV: {

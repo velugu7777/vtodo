@@ -15,7 +15,7 @@
 
       <div class ="collapse navbar-collapse" id ="navbar-collapse">
           <ul class="nav navbar-nav">
-            <li role="presentation" class="active" style ="color:red"><a href="#">TODOS<span class="badge">2</span></a></li>
+            <li>{{#link-to 'todo'}}Todos{{/link-to}}</li>
             <li><a href ="#completed">COMPLETED</a></li>
             <li><a href ="#showall">SHOWALL</a></li>
             <li><a href ="#deleted">DELETED</a></li>
@@ -23,7 +23,7 @@
       </div>
     </div>
   </nav>
-  <div class="jumbotron">
+<!--  <div class="jumbotron">
         <div class ="container text-center">
           <h1>My Todos App</h1>
           <p>Write your todos</p>
@@ -32,5 +32,55 @@
 
           </div>
         </div>
-      </div>
+      </div>-->
+      <section id="todoapp">
+      <header id="header">
+        <h1>todos</h1>
+        <input type="text" id="new-todo" placeholder="What needs to be done?" />
+      </header>
+
+      <section id="main">
+        <ul id="todo-list">
+          <li class="completed">
+            <input type="checkbox" class="toggle">
+            <label>Learn Ember.js</label><button class="destroy"></button>
+          </li>
+          <li>
+            <input type="checkbox" class="toggle">
+            <label>...</label><button class="destroy"></button>
+          </li>
+          <li>
+            <input type="checkbox" class="toggle">
+            <label>Profit!</label><button class="destroy"></button>
+          </li>
+        </ul>
+
+        <input type="checkbox" id="toggle-all">
+      </section>
+
+      <footer id="footer">
+        <span id="todo-count">
+          <strong>2</strong> todos left
+        </span>
+        <ul id="filters">
+          <li>
+            <a href="all" class="selected">All</a>
+          </li>
+          <li>
+            <a href="active">Active</a>
+          </li>
+          <li>
+            <a href="completed">Completed</a>
+          </li>
+        </ul>
+
+        <button id="clear-completed">
+          Clear completed (1)
+        </button>
+      </footer>
+    </section>
+
+    <footer id="info">
+      <p>Double-click to edit a todo</p>
+    </footer>
 -{{outlet}}

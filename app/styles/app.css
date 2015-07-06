@@ -1,14 +1,15 @@
 body{
   padding-top:50px;
 }
+html,
 body {
 	margin: 0;
 	padding: 0;
 }
 
 button {
-	margin: 10px;
-	padding: 50px;
+	margin: 0;
+	padding: 0;
 	border: 0;
 	background: none;
 	font-size: 100%;

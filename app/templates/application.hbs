@@ -10,6 +10,7 @@
           <span class ="icon-bar"></span>
           <span class ="icon-bar"></span>
         </button>
+
         <a href ="" class="navbar-brand">HOME</a>
       </div>
 
@@ -23,7 +24,7 @@
       </div>
     </div>
   </nav>
-<!--  <div class="jumbotron">
+ <!--<div class="jumbotron">
         <div class ="container text-center">
           <h1>My Todos App</h1>
           <p>Write your todos</p>
@@ -32,12 +33,13 @@
 
           </div>
         </div>
-      </div>-->
+      </div><!--endo of jumbo--> -->
+
       <section id="todoapp">
       <header id="header">
         <h1>todos</h1>
         <input type="text" id="new-todo" placeholder="What needs to be done?" />
-      </header>
+      </header><!--end of header-->
 
       <section id="main">
         <ul id="todo-list">
@@ -45,17 +47,20 @@
             <input type="checkbox" class="toggle">
             <label>Learn Ember.js</label><button class="destroy"></button>
           </li>
-          <li>
-            <input type="checkbox" class="toggle">
-            <label>...</label><button class="destroy"></button>
-          </li>
-          <li>
-            <input type="checkbox" class="toggle">
-            <label>Profit!</label><button class="destroy"></button>
-          </li>
-        </ul>
 
-        <input type="checkbox" id="toggle-all">
+          <li>
+            <input type="checkbox" class="toggle">
+            <label>Reading books</label><button class="destroy"></button>
+          </li>
+
+          <li>
+            <input type="checkbox" class="toggle">
+            <label>Playing cricket</label><button class="destroy"></button>
+          </li>
+        </ul> <!--end of main-->
+
+      <input type="checkbox" id="toggle-all">
+
       </section>
 
       <footer id="footer">
@@ -82,5 +87,6 @@
 
     <footer id="info">
       <p>Double-click to edit a todo</p>
-    </footer>
+    </footer><!--end of footer-->
+
 -{{outlet}}

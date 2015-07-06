@@ -1,7 +1,15 @@
-<!-- <h1>MyTodos</h1>
-<h2>No. Of. Todos: {{model.length}} </h2>-->
+ <h1>MyTodos</h1>
+<h2>No. Of. Todos: {{model.length}} </h2>
+{{input
+  type="text"
+  id="new-todo"
+  placeholder="What needs to be done?"
+  value=newname
+  action="createTodo"}}
 {{#each model as |todo| }}
   <li>{{todo.name}}</li>
 {{/each}}
+
+
 
 {{outlet}}

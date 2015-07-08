@@ -10,11 +10,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	//	"strconv"
 )
 
 var db *sql.DB
-var logger = log.New(os.Stdout, "hrguru: ", log.Ldate+log.Ltime+log.Lshortfile)
+var logger = log.New(os.Stdout, ": ", log.Ldate+log.Ltime+log.Lshortfile)
 
 type Todo struct {
 	Id          int    `json:"id"`
@@ -37,13 +36,6 @@ func init() {
 		logger.Fatal("Open connection failed:", err.Error())
 	}
 }
-
-/*
-var mytodos = []Todo{
-	{1, "reading books", false},
-	{2, "playing cricket", false},
-}
-*/
 
 func main() {
 	goji.Get("/", index)
@@ -129,7 +121,7 @@ func newTodo(w http.ResponseWriter, req *http.Request) {
 
 	lastId, err := res.LastInsertId()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	todo.Todo.Id = int(lastId)
 

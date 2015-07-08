@@ -9,6 +9,7 @@ export default Ember.Route.extend({
       this.store.find('todo', id).then(function (todo) {
         todo.destroyRecord(); // => DELETE to /todos/id
       });
+
     }
   }
 });

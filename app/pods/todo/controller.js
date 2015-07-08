@@ -2,8 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   actions: {
-     creteTodo: function(post) {
-       console.log(post.get('name'));
+     createRecord: function(name,isCompleted) {
+      this.store.createRecord('todo', {
+         name: 'Rails is Omakase',
+         isCompleted: false
+       });
+
      }
    }
 });

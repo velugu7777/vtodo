@@ -1,7 +1,9 @@
-
 <h2>No. Of. Todos: {{model.length}} </h2>
+
 {{#each model as |todo| }}
-  <li>{{todo.name}}</li>
+
+  <li>{{todo.name}}  <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>X</button></li>
+
 {{/each}}
 
 {{outlet}}

@@ -13,7 +13,7 @@ import (
 )
 
 var db *sql.DB
-var logger = log.New(os.Stdout, ": ", log.Ldate+log.Ltime+log.Lshortfile)
+var logger = log.New(os.Stdout, ":", log.Ldate+log.Ltime+log.Lshortfile)
 
 type Todo struct {
 	Id          int    `json:"id"`
@@ -31,9 +31,9 @@ type EmberTodos struct {
 
 func init() {
 	var err error
-	db, err = sql.Open("postgres", "user=postgres password=Sunithak*1247 host=localhost port=8080 dbname=postgres sslmode=disable")
+	db, err = sql.Open("postgres", "user=postgres password =Sunithak*1247 host=localhost port=8080 dbname=postgres sslmode=disable")
 	if err != nil {
-		logger.Fatal("Open connection failed:", err.Error())
+		logger.Println("Open connection failed", err.Error())
 	}
 }
 
@@ -41,9 +41,9 @@ func main() {
 	goji.Get("/", index)
 	goji.Get("/assets/*", http.FileServer(http.Dir("./dist")))
 	goji.Get("/api/todos", todos)
-	goji.Post("/api/todos/newTodo", newTodo)
+	goji.Post("/api/todos", newTodo)
 	goji.Put("/api/todos/:id", putTodo)
-	goji.Delete("/api/todos/:id", delTodo)
+	goji.Delete("api/todos/:id", delTodo)
 	goji.NotFound(index)
 	goji.Serve()
 }
@@ -54,17 +54,16 @@ func index(w http.ResponseWriter, req *http.Request) {
 
 func todos(w http.ResponseWriter, req *http.Request) {
 	var mytodos []Todo
-	stmt, err := db.Prepare("SELECT id, name, status from todos")
+	stmt, err := db.Prepare("Select id,name, staus from todos")
 	if err != nil {
 		logger.Println("Prepare failed:", err.Error())
 		return
 	}
-	defer stmt.Close()
 
+	defer stmt.Close()
 	rows, err := stmt.Query()
 	if err != nil {
 		logger.Println(err.Error())
-		return
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -86,10 +85,11 @@ func todos(w http.ResponseWriter, req *http.Request) {
 	}
 	j, err := json.Marshal(etodos)
 	if err != nil {
-		fmt.Println(err)
+		logger.Println(err)
 	}
-	w.Header().Set("Content-type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(j)
+	return
 }
 
 func newTodo(w http.ResponseWriter, req *http.Request) {
@@ -97,34 +97,31 @@ func newTodo(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&todo)
 	if err != nil {
-		logger.Printf("JSON decode failed: %s", err.Error())
+		logger.Printf("json decode failed:%s", err.Error())
 		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	stmt, err := db.Prepare("INSERT INTO todos(name, isCompleted) values($1, $2)")
+	stmt, err := db.Prepare("INSERT INTO todos(name,isCompleted) values($1,$2)")
 	if err != nil {
 		logger.Println("Prepare failed:", err.Error())
-		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	defer stmt.Close()
 	res, err := stmt.Exec(todo.Todo.Name, todo.Todo.IsCompleted)
 	if err != nil {
-		logger.Println("Insert failed", err.Error())
+		logger.Println("Insert failed:", err.Error())
 		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	lastId, err := res.LastInsertId()
 	if err != nil {
 		logger.Fatal(err)
+
 	}
 	todo.Todo.Id = int(lastId)
-
 	j, err := json.Marshal(todo)
 	if err != nil {
 		logger.Println(err)
@@ -136,22 +133,21 @@ func newTodo(w http.ResponseWriter, req *http.Request) {
 	w.Write(j)
 	return
 }
-
 func putTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	id := c.URLParams["id"]
 	var todo EmberTodo
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&todo)
 	if err != nil {
-		logger.Printf("JSON decode failed: %s", err.Error())
+		logger.Printf("Json decode failed:%s", err.Error())
 		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	stmt, err := db.Prepare("UPDATE todos SET Name=$1, IsCompleted=$2 where id = $3")
+	stmt, err := db.Prepare("UPDATE todos SET Name$1,IsCompleted$2, where id = $3")
 	if err != nil {
-		logger.Println("Prepare failed:", err.Error())
+		logger.Println("Prepared failed:", err.Error())
 		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -184,7 +180,6 @@ func putTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	w.Write(j)
 	return
 }
-
 func delTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	id := c.URLParams["id"]
 	stmt, err := db.Prepare("DELETE from todos where id = $1")
@@ -196,4 +191,5 @@ func delTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 		logger.Fatal(err)
 	}
 	logger.Println(res)
+
 }

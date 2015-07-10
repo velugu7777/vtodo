@@ -1,9 +1,9 @@
 <h2>No. Of. Todos: {{model.length}} </h2>
-<input value = "kTodo"> <button type="button" class="btn btn-info">{{action 'posttodo' todo.name}}PostTodo</button>
+
+{{input value = name}}
+<button type = "button" class ="btn btn-info" {{ action 'newTodo' name}}>New Todo</button>
 {{#each model as |todo| }}
-
-  <li>{{todo.name}}  <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>X</button></li>
-
+  <li>{{todo.name}}  <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>Delete</button></li>
 {{/each}}
 
 {{outlet}}

@@ -13,7 +13,7 @@ import (
 )
 
 var db *sql.DB
-var logger = log.New(os.Stdout, ":", log.Ldate+log.Ltime+log.Lshortfile)
+var logger = log.New(os.Stdout, "vtodo:", log.Ldate+log.Ltime+log.Lshortfile)
 
 type Todo struct {
 	Id          int    `json:"id"`
@@ -43,8 +43,10 @@ func main() {
 	goji.Get("/api/todos", todos)
 	goji.Post("/api/todos", newTodo)
 	goji.Put("/api/todos/:id", putTodo)
-	goji.Delete("api/todos/:id", delTodo)
+	goji.Delete("/api/todos/:id", delTodo)
+
 	goji.NotFound(index)
+
 	goji.Serve()
 }
 
@@ -54,7 +56,7 @@ func index(w http.ResponseWriter, req *http.Request) {
 
 func todos(w http.ResponseWriter, req *http.Request) {
 	var mytodos []Todo
-	stmt, err := db.Prepare("Select id,name, staus from todos")
+	stmt, err := db.Prepare("Select id, name, isCompleted from todos")
 	if err != nil {
 		logger.Println("Prepare failed:", err.Error())
 		return
@@ -102,26 +104,20 @@ func newTodo(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	stmt, err := db.Prepare("INSERT INTO todos(name,isCompleted) values($1,$2)")
+	stmt, err := db.Prepare("INSERT INTO todos(name,isCompleted) values($1,$2) RETURNING id")
 	if err != nil {
 		logger.Println("Prepare failed:", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(todo.Todo.Name, todo.Todo.IsCompleted)
+	err = stmt.QueryRow(todo.Todo.Name, todo.Todo.IsCompleted).Scan(&todo.Todo.Id)
 	if err != nil {
 		logger.Println("Insert failed:", err.Error())
 		err := fmt.Errorf("Error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	lastId, err := res.LastInsertId()
-	if err != nil {
-		logger.Fatal(err)
-
-	}
-	todo.Todo.Id = int(lastId)
 	j, err := json.Marshal(todo)
 	if err != nil {
 		logger.Println(err)
@@ -180,16 +176,19 @@ func putTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	w.Write(j)
 	return
 }
+
 func delTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	id := c.URLParams["id"]
+	logger.Println(id)
 	stmt, err := db.Prepare("DELETE from todos where id = $1")
 	if err != nil {
-		logger.Fatal(err)
+		logger.Println(err)
+		return
 	}
 	res, err := stmt.Exec(id)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Println(err)
+		return
 	}
 	logger.Println(res)
-
 }

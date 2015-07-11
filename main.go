@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 var db *sql.DB
@@ -129,11 +130,21 @@ func newTodo(w http.ResponseWriter, req *http.Request) {
 	w.Write(j)
 	return
 }
+
 func putTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 	id := c.URLParams["id"]
 	var todo EmberTodo
+	var err error
+	todo.Todo.Id, err = strconv.Atoi(id)
+
+	if err != nil {
+		logger.Printf("Json decode failed:%s", err.Error())
+		err := fmt.Errorf("Error")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(&todo)
+	err = decoder.Decode(&todo)
 	if err != nil {
 		logger.Printf("Json decode failed:%s", err.Error())
 		err := fmt.Errorf("Error")
@@ -141,7 +152,7 @@ func putTodo(c web.C, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	stmt, err := db.Prepare("UPDATE todos SET Name$1,IsCompleted$2, where id = $3")
+	stmt, err := db.Prepare("UPDATE todos SET Name= $1, IsCompleted = $2 where id = $3")
 	if err != nil {
 		logger.Println("Prepared failed:", err.Error())
 		err := fmt.Errorf("Error")

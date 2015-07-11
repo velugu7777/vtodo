@@ -1,9 +1,19 @@
 <h2>No. Of. Todos: {{model.length}} </h2>
 
-{{input value = name}}
+{{input  value=name action='newTodo' on='enter'}}
 <button type = "button" class ="btn btn-info" {{ action 'newTodo' name}}>New Todo</button>
+
 {{#each model as |todo| }}
-  <li>{{todo.name}}  <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>Delete</button></li>
+  <li>
+      {{#if todo.isVisible}}
+        {{input value = todo.name}}
+        <button type ="button" class="btn btn-success" {{action 'updateTodo' todo}}>Save</button>
+      {{else}}
+        <span {{action 'editTodo' todo on='doubleClick'}}> {{todo.name}}</span>
+        <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>Delete</button>
+      {{/if}}
+
+  </li>
 {{/each}}
 
 {{outlet}}

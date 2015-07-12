@@ -5,15 +5,19 @@
 
 {{#each model as |todo| }}
   <li>
+      {{input type ="checkbox"}}
       {{#if todo.isVisible}}
-        {{input value = todo.name}}
+        {{input value = todo.name }}
         <button type ="button" class="btn btn-success" {{action 'updateTodo' todo}}>Save</button>
       {{else}}
         <span {{action 'editTodo' todo on='doubleClick'}}> {{todo.name}}</span>
-        <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>Delete</button>
+        <button type ="button" class="btn btn-danger" {{action 'delTodo' todo.id}}>X</button>
       {{/if}}
 
   </li>
+
 {{/each}}
+
+
 
 {{outlet}}

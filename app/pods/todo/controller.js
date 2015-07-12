@@ -13,6 +13,7 @@ export default Ember.Controller.extend({
     editTodo(todo){
       todo.set('isVisible', true);
     },
+    
 
    }
 
